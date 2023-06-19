@@ -1,8 +1,8 @@
 import Fluent
 import Vapor
 
-final class Todo: Model, Content {
-    static let schema = "todos"
+final class MovieDTO: Model, Content {
+    static let schema = "movies"
     
     @ID(key: .id)
     var id: UUID?

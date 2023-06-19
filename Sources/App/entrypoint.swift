@@ -35,6 +35,7 @@ enum Entrypoint {
             app.logger.report(error: error)
             throw error
         }
+        
         try await app.runFromAsyncMainEntrypoint()
     }
 }
