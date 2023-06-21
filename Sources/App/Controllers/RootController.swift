@@ -1,7 +1,7 @@
 import Vapor
 
-struct RootController: RouteCollection {
-    func boot(routes root: RoutesBuilder) throws {
-        root.get { _ in "It works!" }
+final class RootController {
+    func index(request: Request) -> [String: Int] {
+        return ["statusCode": 200]
     }
 }

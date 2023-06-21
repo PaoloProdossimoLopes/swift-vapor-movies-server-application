@@ -1,5 +1,5 @@
 import Vapor
 
-protocol Configurable {
+protocol Middleware {
     func configure(_ app: Application) throws
 }
