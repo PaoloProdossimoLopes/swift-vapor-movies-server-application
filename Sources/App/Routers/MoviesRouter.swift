@@ -8,14 +8,14 @@ struct MoviesRouter: RouteCollection {
         self.controller = controller
     }
     
-    func boot(routes: Vapor.RoutesBuilder) throws {
+    func boot(routes: RoutesBuilder) throws {
         let movies = routes.grouped("movies")
 
         movies.get { request in
             let listMovieModel = controller.index()
             let statusCode = HTTPStatus(statusCode: listMovieModel.statusCode)
             let moviesResponse = listMovieModel.data.map(MovieResponse.init(model:))
-            
+
             return moviesResponse.encodeResponse(status: statusCode, for: request)
         }
         

@@ -10,13 +10,13 @@ final class MoviesController {
         self.creater = creater
     }
     
-    func index() -> ResponseData<[Movie]> {
+    func index() -> Model<[Movie]> {
         let listMovieModel = lister.fetch()
-        return ResponseData(model: listMovieModel)
+        return listMovieModel
     }
     
-    func create(newMovie: Movie) -> ResponseData<Movie> {
+    func create(newMovie: Movie) -> Model<Movie> {
         let createdMovieModel = creater.create(movie: newMovie)
-        return ResponseData(model: createdMovieModel)
+        return createdMovieModel
     }
 }
