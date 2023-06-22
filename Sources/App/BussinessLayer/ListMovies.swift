@@ -10,13 +10,13 @@ final class ListMovies {
         self.repository = repository
     }
     
-    func fetch() -> Model<[Movie]> {
+    func fetch() -> ResponseResult<[Movie]> {
         let movies = repository.load()
         
         if movies.isEmpty {
-            return Model(statusCode: 204, data: [Movie]())
+            return .noContent
         }
         
-        return Model(statusCode: 200, data: movies)
+        return .ok(movies)
     }
 }

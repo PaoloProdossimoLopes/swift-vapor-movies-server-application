@@ -19,8 +19,8 @@ final class CreateMovie {
         self.repository = repository
     }
     
-    func create(movie: Movie) -> Model<Movie> {
+    func create(movie: Movie) -> ResponseResult<Movie> {
         let createdMovie = repository.save(movie)
-        return Model(statusCode: 201, data: createdMovie)
+        return .created(createdMovie)
     }
 }

@@ -21,3 +21,12 @@ extension InmemoryMovieRepository: CreateMovieRepository {
         return dto.toModel()
     }
 }
+
+extension InmemoryMovieRepository: MovieFinderRepository {
+    
+    func find(by id: String) -> Movie? {
+        storedMovies
+            .first { $0.id.uuidString == id }
+            .map { $0.toModel() }
+    }
+}

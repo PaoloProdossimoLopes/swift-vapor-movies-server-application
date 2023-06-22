@@ -9,24 +9,53 @@ struct MoviesRouter: RouteCollection {
     }
     
     func boot(routes: RoutesBuilder) throws {
-        let movies = routes.grouped("movies")
+        let movies = routes.grouped(controller.path.pathComponents)
 
         movies.get { request in
-            let listMovieModel = controller.index()
-            let statusCode = HTTPStatus(statusCode: listMovieModel.statusCode)
-            let moviesResponse = listMovieModel.data.map(MovieResponse.init(model:))
-
-            return moviesResponse.encodeResponse(status: statusCode, for: request)
+            let result = controller.index()
+            return result.handle(request: request, map: { $0.map(MovieResponse.init(model:)) })
         }
         
         movies.post { request in
             let movieReceived = try request.content.decode(MovieRequest.self)
             let movieModel = movieReceived.toModel()
-            let createdMovieModel = controller.create(newMovie: movieModel)
-            let statusCode = HTTPResponseStatus(statusCode: createdMovieModel.statusCode)
-            let responseModel = MovieResponse(model: createdMovieModel.data)
-            
-            return responseModel.encodeResponse(status: statusCode, for: request)
+            let createdMovieResult = controller.create(newMovie: movieModel)
+            return createdMovieResult.handle(request: request, map: MovieResponse.init(model:))
         }
+        
+        let idParam = "id"
+        movies.get(":\(idParam)") { request in
+            guard let movieId = request.parameters.get("\(idParam)") else {
+                return HTTPStatus.badRequest.encodeResponse(for: request)
+            }
+            
+            let resultFinded = controller.find(by: movieId)
+            return resultFinded.handle(request: request, map: MovieResponse.init(model:))
+        }
+    }
+}
+
+extension ResponseResult {
+    func handle(request: Request, map: (D) -> some Content) -> EventLoopFuture<Response> {
+        let code = HTTPStatus(statusCode: statusCode)
+        
+        if let error = error {
+            let errorResponse = ErrorResponse(error: error.error, reason: error.reason)
+            return errorResponse.encodeResponse(status: code, for: request)
+        }
+        
+        let successStatusCodeRange = (200...299)
+        let isSuccessStatusCode = successStatusCodeRange.contains(statusCode)
+        guard let data = data, isSuccessStatusCode else {
+            return code.encodeResponse(for: request)
+        }
+        
+        return map(data).encodeResponse(status: code, for: request)
+    }
+    
+    
+    struct ErrorResponse: Content {
+        let error: Bool
+        let reason: String
     }
 }
