@@ -11,5 +11,6 @@ struct MoviesRouter: RouteCollection {
         let movies = routes.grouped("movies")
 
         movies.get(use: controller.index)
+        movies.post(use: controller.create)
     }
 }

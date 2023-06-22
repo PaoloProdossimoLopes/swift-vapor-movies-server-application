@@ -1,7 +1,23 @@
-final class InmemoryMovieRepository: MovieLoaderRepository {
-    private var movies = [MovieDTO]()
+import Foundation
+
+final class InmemoryMovieRepository {
+    private var storedMovies = [MovieDTO]()
+}
+
+extension InmemoryMovieRepository: MovieLoaderRepository {
     
     func load() -> [Movie] {
-        movies.map { $0.toModel() }
+        storedMovies.map { $0.toModel() }
+    }
+}
+
+extension InmemoryMovieRepository: CreateMovieRepository {
+    
+    func save(_ movie: Movie) -> Movie {
+        let dto = MovieDTO(id: UUID(), model: movie)
+        
+        storedMovies.append(dto)
+        
+        return dto.toModel()
     }
 }

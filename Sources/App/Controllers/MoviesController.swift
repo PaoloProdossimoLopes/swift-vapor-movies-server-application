@@ -3,9 +3,11 @@ import Vapor
 final class MoviesController {
     
     private let lister: ListMovies
+    private let creater: CreateMovie
     
-    init(lister: ListMovies) {
+    init(lister: ListMovies, creater: CreateMovie) {
         self.lister = lister
+        self.creater = creater
     }
     
     func index(request: Request) -> EventLoopFuture<Response> {
@@ -17,7 +19,31 @@ final class MoviesController {
         return content.encodeResponse(status: statusCode, for: request)
     }
     
-    struct MovieResponse: Content {
-        init(model: Movie) { }
+    func create(request: Request) throws -> EventLoopFuture<Response> {
+        let movieReceived = try request.content.decode(MovieRequest.self)
+        let createdModel = creater.create(movie: movieReceived.toModel())
+        
+        let statusCode = HTTPResponseStatus(statusCode: createdModel.statusCode)
+        let content = MovieResponse(model: createdModel.data)
+        
+        return content.encodeResponse(status: statusCode, for: request)
+    }
+    
+    private struct MovieResponse: Content {
+        let id: UUID
+        let title: String
+        
+        init(model: Movie) {
+            id = model.id!
+            title = model.title
+        }
+    }
+    
+    private struct MovieRequest: Content {
+        let title: String
+        
+        func toModel() -> Movie {
+            Movie(id: nil, title: title)
+        }
     }
 }
