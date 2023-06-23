@@ -7,17 +7,27 @@ extension Movie: Equatable {
     }
 }
 
+extension Movie {
+    static var withoutId: Self {
+        Movie(id: nil, title: "any title with id null")
+    }
+    
+    static var withId: Self {
+        let id = UUID()
+        return Movie(id: id, title: "any title with id: \(id.uuidString)")
+    }
+}
+
 extension [Movie] {
     static var empty: Self {
         []
     }
     
     static var withNullId: Self {
-        [Movie(id: nil, title: "any title")]
+        [.withoutId]
     }
     
     static var noEmpty: Self {
-        let id = UUID()
-        return [Movie(id: id, title: "any title with id: \(id.uuidString)")]
+        [.withId]
     }
 }
