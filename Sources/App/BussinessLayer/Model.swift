@@ -1,37 +1,3 @@
-//struct Model<M> {
-//    let statusCode: Int
-//    let data: M
-//}
-
-//enum Model<M> {
-//    case noContent
-//    case ok(model: M)
-//
-//    var code: Int {
-//        switch self {
-//        case .noContent: return 204
-//        case .ok: return 200
-//        }
-//    }
-//}
-
-//enum ResultModel<M> {
-//    case ok(_ model: M)
-//    case created(_ model: M)
-//    case noContent
-//    case notFound
-//    case badRequest(reason: String)
-//
-//    var code: Int {
-//        switch self {
-//        case .ok: return 200
-//        case .created: return 201
-//        case .noContent: return 204
-//        case .notFound: return 404
-//        case .badRequest: return 400
-//        }
-//    }
-//}
 
 struct ResponseResult<D> {
     let data: D?
