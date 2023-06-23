@@ -10,19 +10,32 @@ struct MoviesRouter: RouteCollection {
     
     func boot(routes: RoutesBuilder) throws {
         let movies = routes.grouped(controller.path.pathComponents)
+        
+        configureListAllMovies(movies)
+        configureCreateMovie(movies)
+        configureFindMovie(movies)
+    }
+}
 
+private extension MoviesRouter {
+    
+    func configureListAllMovies(_ movies: RoutesBuilder) {
         movies.get { request in
             let result = controller.index()
             return result.handle(request: request, map: { $0.map(MovieResponse.init(model:)) })
         }
-        
+    }
+    
+    func configureCreateMovie(_ movies: RoutesBuilder) {
         movies.post { request in
             let movieReceived = try request.content.decode(MovieRequest.self)
             let movieModel = movieReceived.toModel()
             let createdMovieResult = controller.create(newMovie: movieModel)
             return createdMovieResult.handle(request: request, map: MovieResponse.init(model:))
         }
-        
+    }
+    
+    func configureFindMovie(_ movies: RoutesBuilder) {
         let idParam = "id"
         movies.get(":\(idParam)") { request in
             guard let movieId = request.parameters.get("\(idParam)") else {
@@ -52,7 +65,6 @@ extension ResponseResult {
         
         return map(data).encodeResponse(status: code, for: request)
     }
-    
     
     struct ErrorResponse: Content {
         let error: Bool
