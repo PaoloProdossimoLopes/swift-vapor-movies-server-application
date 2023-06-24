@@ -1,14 +1,26 @@
 import Vapor
 
+protocol MovieLister {
+    func fetch() -> ResponseResult<[Movie]>
+}
+
+protocol MovieSaver {
+    func create(movie: Movie) -> ResponseResult<Movie>
+}
+
+protocol MovieFinder {
+    func find(by id: String) -> ResponseResult<Movie>
+}
+
 final class MoviesController {
     
-    private let lister: ListMovies
-    private let creater: CreateMovie
-    private let finder: FindMovie
+    private let lister: MovieLister
+    private let creater: MovieSaver
+    private let finder: MovieFinder
     
     let path = "movies"
     
-    init(lister: ListMovies, creater: CreateMovie, finder: FindMovie) {
+    init(lister: MovieLister, creater: MovieSaver, finder: MovieFinder) {
         self.lister = lister
         self.creater = creater
         self.finder = finder

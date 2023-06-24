@@ -4,7 +4,7 @@ protocol CreateMovieRepository {
     func save(_ movie: Movie) -> Movie
 }
 
-final class CreateMovie {
+final class CreateMovie: MovieSaver {
     
     private let repository: CreateMovieRepository
     

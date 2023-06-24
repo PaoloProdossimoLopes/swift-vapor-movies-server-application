@@ -4,7 +4,7 @@ protocol MovieFinderRepository {
     func find(by id: String) -> Movie?
 }
 
-final class FindMovie {
+final class FindMovie: MovieFinder {
     
     private let repository: MovieFinderRepository
     

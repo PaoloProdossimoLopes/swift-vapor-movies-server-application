@@ -2,7 +2,7 @@ protocol MovieLoaderRepository {
     func load() -> [Movie]
 }
 
-final class ListMovies {
+final class ListMovies: MovieLister {
     
     private let repository: MovieLoaderRepository
     
