@@ -22,7 +22,8 @@ private extension MoviesRouter {
     func configureListAllMovies(_ movies: RoutesBuilder) {
         movies.get { request in
             let result = controller.index()
-            return result.handle(request: request, map: { $0.map(MovieResponse.init(model:)) })
+            let response = result.handle(request: request, map: { $0.map(map) })
+            return response
         }
     }
     
@@ -31,7 +32,7 @@ private extension MoviesRouter {
             let movieReceived = try request.content.decode(MovieRequest.self)
             let movieModel = movieReceived.toModel()
             let createdMovieResult = controller.create(newMovie: movieModel)
-            return createdMovieResult.handle(request: request, map: MovieResponse.init(model:))
+            return createdMovieResult.handle(request: request, map: map)
         }
     }
     
@@ -43,8 +44,12 @@ private extension MoviesRouter {
             }
             
             let resultFinded = controller.find(by: movieId)
-            return resultFinded.handle(request: request, map: MovieResponse.init(model:))
+            return resultFinded.handle(request: request, map: map)
         }
+    }
+    
+    func map(model: Movie) -> MovieResponse {
+        MovieResponse(model: model)
     }
 }
 

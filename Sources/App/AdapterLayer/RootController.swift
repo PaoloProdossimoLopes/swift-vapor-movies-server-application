@@ -1,7 +1,5 @@
-import Vapor
-
 final class RootController {
-    func index(request: Request) -> [String: Int] {
+    func index() -> [String: Int] {
         return ["statusCode": 200]
     }
 }
